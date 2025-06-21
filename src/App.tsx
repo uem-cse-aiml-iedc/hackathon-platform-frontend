@@ -16,6 +16,8 @@ import CreateHackathon from './pages/CreateHackathon';
 import EditHackathon from './pages/EditHackathon';
 import Profile from './pages/Profile';
 import OrganizerDashboard from './pages/OrganizerDashboard';
+import HackathonRegistration from './pages/HackathonRegistration';
+import TeamManagement from './pages/TeamManagement';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -69,6 +71,22 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <OrganizerDashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/register/:hackathonId"
+                    element={
+                      <ProtectedRoute>
+                        <HackathonRegistration />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/team/:hackathonId"
+                    element={
+                      <ProtectedRoute>
+                        <TeamManagement />
                       </ProtectedRoute>
                     }
                   />
