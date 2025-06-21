@@ -225,6 +225,78 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
     }
   };
 
+  // Helper function to evenly distribute unallocated PDFs
+  const distributeUnallocatedPDFs = (initialResult: AllocationResult, allPPTs: any[], mentors: any[]) => {
+    // Find PDFs that were not allocated
+    const allocatedTeamIds = new Set(initialResult.allocations.map(allocation => allocation.teamId));
+    const unallocatedPPTs = allPPTs.filter(ppt => !allocatedTeamIds.has(ppt.teamId));
+    
+    if (unallocatedPPTs.length === 0) {
+      return initialResult; // All PDFs already allocated
+    }
+
+    // Create a copy of the initial allocations
+    const updatedAllocations = [...initialResult.allocations];
+    
+    // Create a map to track allocations per mentor for even distribution
+    const mentorAllocationCount = new Map();
+    mentors.forEach(mentor => {
+      mentorAllocationCount.set(mentor.email, 0);
+    });
+    
+    // Count current allocations per mentor
+    updatedAllocations.forEach(allocation => {
+      const currentCount = mentorAllocationCount.get(allocation.mentorEmail) || 0;
+      mentorAllocationCount.set(allocation.mentorEmail, currentCount + 1);
+    });
+
+    // Distribute unallocated PDFs evenly
+    unallocatedPPTs.forEach((ppt, index) => {
+      // Find mentor with least allocations
+      let selectedMentor = mentors[0];
+      let minAllocations = mentorAllocationCount.get(selectedMentor.email);
+      
+      mentors.forEach(mentor => {
+        const allocations = mentorAllocationCount.get(mentor.email);
+        if (allocations < minAllocations) {
+          minAllocations = allocations;
+          selectedMentor = mentor;
+        }
+      });
+      
+      // Create allocation for unallocated PDF
+      const newAllocation = {
+        mentorName: selectedMentor.name,
+        mentorEmail: selectedMentor.email,
+        mentorSkills: selectedMentor.skills,
+        teamId: ppt.teamId,
+        pptKeywords: ppt.keywords || [],
+        matchScore: 25, // Low match score since it's force-allocated
+        matchedSkills: [], // No specific skill matches
+        pdfDownloadLink: ppt.pdfDownloadLink || `https://server.aimliedc.tech/h4b-pdf-idea/get-pdf/${ppt.teamId}`
+      };
+      
+      updatedAllocations.push(newAllocation);
+      
+      // Update the count for this mentor
+      mentorAllocationCount.set(selectedMentor.email, minAllocations + 1);
+    });
+
+    // Recalculate summary statistics
+    const updatedSummary = {
+      totalMentors: mentors.length,
+      totalPPTs: allPPTs.length,
+      allocatedPPTs: updatedAllocations.length,
+      averageMatchScore: updatedAllocations.reduce((sum, allocation) => sum + allocation.matchScore, 0) / updatedAllocations.length
+    };
+
+    return {
+      allocations: updatedAllocations,
+      summary: updatedSummary,
+      unallocatedCount: 0 // All PDFs are now allocated
+    };
+  };
+
   const onSubmit = async (data: AllocationFormData) => {
     if (!currentUser) {
       showError('Authentication Error', 'Please log in to allocate mentors');
@@ -249,19 +321,32 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
         return;
       }
 
-      const result = await MentorAllocationService.allocateMentorsToPPTs({
+      // Perform initial allocation
+      const initialResult = await MentorAllocationService.allocateMentorsToPPTs({
         hackathonId,
         mentors: data.mentors,
         ppts,
       });
 
-      setAllocationResult(result);
+      // Ensure all PDFs are allocated by distributing unallocated ones evenly
+      const finalResult = distributeUnallocatedPDFs(initialResult, ppts, data.mentors);
+
+      setAllocationResult(finalResult);
       setShowVisualization(true);
 
-      showSuccess(
-        'Mentor Allocation Complete! 🎓',
-        `Successfully allocated ${result.allocations.length} PPTs to mentors with ${result.summary.averageMatchScore.toFixed(1)}% average match score`
-      );
+      const unallocatedCount = ppts.length - initialResult.allocations.length;
+      
+      if (unallocatedCount > 0) {
+        showSuccess(
+          'Mentor Allocation Complete! 🎓',
+          `Successfully allocated all ${finalResult.summary.allocatedPPTs} PPTs to mentors. ${unallocatedCount} PDFs were evenly distributed after initial allocation. Average match score: ${finalResult.summary.averageMatchScore.toFixed(1)}%`
+        );
+      } else {
+        showSuccess(
+          'Mentor Allocation Complete! 🎓',
+          `Successfully allocated ${finalResult.allocations.length} PPTs to mentors with ${finalResult.summary.averageMatchScore.toFixed(1)}% average match score`
+        );
+      }
 
     } catch (error: any) {
       showError(
@@ -317,7 +402,13 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
     if (score >= 80) return 'text-green-600 bg-green-100';
     if (score >= 60) return 'text-yellow-600 bg-yellow-100';
     if (score >= 40) return 'text-orange-600 bg-orange-100';
+    if (score >= 25) return 'text-blue-600 bg-blue-100'; // For evenly distributed PDFs
     return 'text-red-600 bg-red-100';
+  };
+
+  const getMatchScoreLabel = (score: number) => {
+    if (score < 30) return 'EVENLY DISTRIBUTED';
+    return `${score.toFixed(1)}% MATCH`;
   };
 
   return (
@@ -897,7 +988,7 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                             {/* Match Score Badge */}
                             <div className="absolute top-3 sm:top-4 right-3 sm:right-4">
                               <div className={`px-2 py-1 sm:px-3 sm:py-1 border-2 border-primary text-xs sm:text-sm font-bold ${getMatchScoreColor(allocation.matchScore)}`}>
-                                {allocation.matchScore.toFixed(1)}% MATCH
+                                {getMatchScoreLabel(allocation.matchScore)}
                               </div>
                             </div>
 
@@ -997,7 +1088,7 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                     Hackathon ID: {hackathonId}
                   </p>
                   <p className="font-inter text-primary/60 text-xs">
-                    AI-powered mentor allocation with skill matching
+                    AI-powered mentor allocation with skill matching • All PDFs guaranteed allocation
                   </p>
                 </div>
                 
