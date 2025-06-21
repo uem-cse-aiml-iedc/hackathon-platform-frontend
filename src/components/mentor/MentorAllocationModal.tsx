@@ -339,40 +339,40 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 p-6 border-b-4 border-primary relative overflow-hidden">
+            <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 p-4 sm:p-6 border-b-4 border-primary relative overflow-hidden">
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
                 animate={{ x: [-100, 400] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               />
               
-              <div className="relative z-10 flex justify-between items-start">
-                <div className="flex-1 pr-4">
-                  <div className="flex items-center space-x-3 mb-3">
+              <div className="relative z-10 flex flex-col sm:flex-row justify-between sm:items-start space-y-4 sm:space-y-0">
+                <div className="flex-1 pr-0 sm:pr-4">
+                  <div className="flex items-center space-x-3 mb-2 sm:mb-3">
                     <motion.div
                       animate={{ rotate: [0, 360] }}
                       transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
                     >
-                      <GraduationCap className="h-8 w-8 text-white" />
+                      <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                     </motion.div>
-                    <h1 className="font-space font-bold text-3xl text-white">
+                    <h1 className="font-space font-bold text-xl sm:text-3xl text-white">
                       MENTOR-PPT ALLOCATION
                     </h1>
                   </div>
                   
-                  <p className="font-inter text-white/90 text-lg mb-4">
+                  <p className="font-inter text-white/90 text-sm sm:text-lg mb-3 sm:mb-4">
                     {hackathonName}
                   </p>
                   
-                  <div className="flex flex-wrap gap-3">
-                    <div className="bg-white/20 border-2 border-white/30 px-4 py-2 backdrop-blur-sm">
-                      <span className="font-inter font-bold text-white text-sm">
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
+                    <div className="bg-white/20 border-2 border-white/30 px-3 py-1 sm:px-4 sm:py-2 backdrop-blur-sm">
+                      <span className="font-inter font-bold text-white text-xs sm:text-sm">
                         {fields.length} MENTORS CONFIGURED
                       </span>
                     </div>
                     {allocationResult && (
-                      <div className="bg-white/20 border-2 border-white/30 px-4 py-2 backdrop-blur-sm">
-                        <span className="font-inter font-bold text-white text-sm">
+                      <div className="bg-white/20 border-2 border-white/30 px-3 py-1 sm:px-4 sm:py-2 backdrop-blur-sm">
+                        <span className="font-inter font-bold text-white text-xs sm:text-sm">
                           {allocationResult.summary.allocatedPPTs} PPTs ALLOCATED
                         </span>
                       </div>
@@ -384,15 +384,15 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={onClose}
-                  className="bg-white/20 text-white p-3 border-2 border-white/30 shadow-brutal-sm hover:bg-white/30 transition-all duration-200 backdrop-blur-sm"
+                  className="bg-white/20 text-white p-2 sm:p-3 border-2 border-white/30 shadow-brutal-sm hover:bg-white/30 transition-all duration-200 backdrop-blur-sm self-end sm:self-start"
                 >
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5 sm:h-6 sm:w-6" />
                 </motion.button>
               </div>
             </div>
 
             {/* Content */}
-            <div className="overflow-y-auto max-h-[calc(90vh-200px)] p-6">
+            <div className="overflow-y-auto max-h-[calc(90vh-200px)] p-4 sm:p-6">
               {!showVisualization ? (
                 /* Input Interface */
                 <motion.div
@@ -400,31 +400,31 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                   animate={{ opacity: 1, y: 0 }}
                 >
                   {/* Tab Headers */}
-                  <div className="border-b-2 border-primary mb-6">
+                  <div className="border-b-2 border-primary mb-4 sm:mb-6">
                     <div className="flex">
                       <button
                         onClick={() => setActiveTab('input')}
-                        className={`px-6 py-4 font-inter font-semibold border-r-2 border-primary transition-colors duration-200 ${
+                        className={`px-4 py-3 sm:px-6 sm:py-4 font-inter font-semibold border-r-2 border-primary transition-colors duration-200 text-xs sm:text-sm ${
                           activeTab === 'input'
                             ? 'bg-accent text-primary'
                             : 'bg-background text-primary/70 hover:bg-accent/20'
                         }`}
                       >
-                        <div className="flex items-center space-x-2">
-                          <Users className="h-5 w-5" />
+                        <div className="flex items-center space-x-1 sm:space-x-2">
+                          <Users className="h-4 w-4 sm:h-5 sm:w-5" />
                           <span>MANUAL INPUT</span>
                         </div>
                       </button>
                       <button
                         onClick={() => setActiveTab('chat')}
-                        className={`px-6 py-4 font-inter font-semibold transition-colors duration-200 ${
+                        className={`px-4 py-3 sm:px-6 sm:py-4 font-inter font-semibold transition-colors duration-200 text-xs sm:text-sm ${
                           activeTab === 'chat'
                             ? 'bg-accent text-primary'
                             : 'bg-background text-primary/70 hover:bg-accent/20'
                         }`}
                       >
-                        <div className="flex items-center space-x-2">
-                          <Bot className="h-5 w-5" />
+                        <div className="flex items-center space-x-1 sm:space-x-2">
+                          <Bot className="h-4 w-4 sm:h-5 sm:w-5" />
                           <span>AI ASSISTANT</span>
                         </div>
                       </button>
@@ -433,11 +433,11 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
 
                   {activeTab === 'input' ? (
                     /* Manual Input Form */
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
                       {/* Mentor Configuration */}
                       <div>
-                        <div className="flex justify-between items-center mb-6">
-                          <h3 className="font-space font-bold text-2xl text-primary">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+                          <h3 className="font-space font-bold text-xl sm:text-2xl text-primary">
                             CONFIGURE MENTORS
                           </h3>
                           <motion.button
@@ -445,23 +445,23 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                             whileTap={{ scale: 0.95 }}
                             type="button"
                             onClick={addMentor}
-                            className="bg-accent text-primary px-4 py-2 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold flex items-center"
+                            className="bg-accent text-primary px-3 py-2 sm:px-4 sm:py-2 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold flex items-center justify-center text-xs sm:text-sm"
                           >
-                            <Plus className="h-5 w-5 mr-2" />
+                            <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
                             ADD MENTOR
                           </motion.button>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                           {fields.map((field, index) => (
                             <motion.div
                               key={field.id}
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
-                              className="bg-accent/10 border-4 border-primary shadow-brutal p-6 relative"
+                              className="bg-accent/10 border-4 border-primary shadow-brutal p-4 sm:p-6 relative"
                             >
                               <div className="flex justify-between items-start mb-4">
-                                <h4 className="font-space font-bold text-xl text-primary">
+                                <h4 className="font-space font-bold text-lg sm:text-xl text-primary">
                                   MENTOR #{index + 1}
                                 </h4>
                                 {fields.length > 1 && (
@@ -473,23 +473,23 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                                     className="bg-secondary text-background p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200"
                                     title="Remove Mentor"
                                   >
-                                    <Trash2 className="h-4 w-4" />
+                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                                   </motion.button>
                                 )}
                               </div>
 
-                              <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 mb-4">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                 {/* Mentor Name */}
                                 <div>
-                                  <label className="block font-inter font-semibold text-primary mb-2">
+                                  <label className="block font-inter font-semibold text-primary mb-2 text-xs sm:text-sm">
                                     MENTOR NAME *
                                   </label>
                                   <div className="relative">
-                                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary/50" />
+                                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-primary/50" />
                                     <input
                                       {...register(`mentors.${index}.name`)}
                                       type="text"
-                                      className={`w-full pl-10 pr-4 py-3 border-2 focus:outline-none font-inter bg-background ${
+                                      className={`w-full pl-10 pr-4 py-2 sm:py-3 border-2 focus:outline-none font-inter bg-background text-xs sm:text-sm ${
                                         errors.mentors?.[index]?.name 
                                           ? 'border-secondary focus:border-secondary' 
                                           : 'border-primary focus:border-secondary'
@@ -497,16 +497,16 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                                       placeholder="e.g., Dr. John Smith"
                                     />
                                     {errors.mentors?.[index]?.name && (
-                                      <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary" />
+                                      <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
                                     )}
                                   </div>
                                   {errors.mentors?.[index]?.name && (
                                     <motion.p 
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
-                                      className="mt-1 text-sm text-secondary font-inter flex items-center space-x-1"
+                                      className="mt-1 text-xs sm:text-sm text-secondary font-inter flex items-center space-x-1"
                                     >
-                                      <AlertCircle className="h-4 w-4" />
+                                      <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                                       <span>{errors.mentors[index]?.name?.message}</span>
                                     </motion.p>
                                   )}
@@ -514,15 +514,15 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
 
                                 {/* Mentor Email */}
                                 <div>
-                                  <label className="block font-inter font-semibold text-primary mb-2">
+                                  <label className="block font-inter font-semibold text-primary mb-2 text-xs sm:text-sm">
                                     EMAIL ADDRESS *
                                   </label>
                                   <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary/50" />
+                                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-primary/50" />
                                     <input
                                       {...register(`mentors.${index}.email`)}
                                       type="email"
-                                      className={`w-full pl-10 pr-4 py-3 border-2 focus:outline-none font-inter bg-background ${
+                                      className={`w-full pl-10 pr-4 py-2 sm:py-3 border-2 focus:outline-none font-inter bg-background text-xs sm:text-sm ${
                                         errors.mentors?.[index]?.email 
                                           ? 'border-secondary focus:border-secondary' 
                                           : 'border-primary focus:border-secondary'
@@ -530,16 +530,16 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                                       placeholder="mentor@example.com"
                                     />
                                     {errors.mentors?.[index]?.email && (
-                                      <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary" />
+                                      <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
                                     )}
                                   </div>
                                   {errors.mentors?.[index]?.email && (
                                     <motion.p 
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
-                                      className="mt-1 text-sm text-secondary font-inter flex items-center space-x-1"
+                                      className="mt-1 text-xs sm:text-sm text-secondary font-inter flex items-center space-x-1"
                                     >
-                                      <AlertCircle className="h-4 w-4" />
+                                      <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                                       <span>{errors.mentors[index]?.email?.message}</span>
                                     </motion.p>
                                   )}
@@ -548,7 +548,7 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
 
                               {/* Skills Section */}
                               <div>
-                                <label className="block font-inter font-semibold text-primary mb-2">
+                                <label className="block font-inter font-semibold text-primary mb-2 text-xs sm:text-sm">
                                   SKILLS & EXPERTISE *
                                 </label>
                                 <div className="space-y-3">
@@ -556,7 +556,7 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                                     <input
                                       type="text"
                                       placeholder="Enter a skill (e.g., Machine Learning, React, Python)"
-                                      className="flex-1 px-4 py-3 border-2 border-primary focus:border-secondary focus:outline-none font-inter bg-background"
+                                      className="flex-1 px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary focus:border-secondary focus:outline-none font-inter bg-background text-xs sm:text-sm"
                                       onKeyPress={(e) => {
                                         if (e.key === 'Enter') {
                                           e.preventDefault();
@@ -577,9 +577,9 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                                           input.value = '';
                                         }
                                       }}
-                                      className="bg-accent text-primary px-4 py-3 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold"
+                                      className="bg-accent text-primary px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs sm:text-sm"
                                     >
-                                      <Plus className="h-5 w-5" />
+                                      <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                                     </motion.button>
                                   </div>
                                   
@@ -590,9 +590,9 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                                           key={skillIndex}
                                           initial={{ opacity: 0, scale: 0.8 }}
                                           animate={{ opacity: 1, scale: 1 }}
-                                          className="bg-secondary text-background px-3 py-1 border-2 border-primary shadow-brutal-sm flex items-center space-x-2"
+                                          className="bg-secondary text-background px-2 py-1 sm:px-3 sm:py-1 border-2 border-primary shadow-brutal-sm flex items-center space-x-1 sm:space-x-2"
                                         >
-                                          <span className="font-inter font-semibold text-sm">{skill}</span>
+                                          <span className="font-inter font-semibold text-xs sm:text-sm">{skill}</span>
                                           <motion.button
                                             whileHover={{ scale: 1.1 }}
                                             whileTap={{ scale: 0.9 }}
@@ -611,9 +611,9 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                                     <motion.p 
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
-                                      className="text-sm text-secondary font-inter flex items-center space-x-1"
+                                      className="text-xs sm:text-sm text-secondary font-inter flex items-center space-x-1"
                                     >
-                                      <AlertCircle className="h-4 w-4" />
+                                      <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                                       <span>{errors.mentors[index]?.skills?.message}</span>
                                     </motion.p>
                                   )}
@@ -630,19 +630,19 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                         whileTap={{ scale: 0.98 }}
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-secondary text-background py-4 px-6 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center relative overflow-hidden group"
+                        className="w-full bg-secondary text-background py-3 sm:py-4 px-4 sm:px-6 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold text-sm sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center relative overflow-hidden group"
                       >
                         <motion.div
                           className="absolute inset-0 bg-accent opacity-0 group-hover:opacity-30 transition-opacity duration-300"
                         />
                         {isSubmitting ? (
                           <div className="flex items-center relative z-10">
-                            <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                            <Loader2 className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6 animate-spin" />
                             ALLOCATING MENTORS...
                           </div>
                         ) : (
                           <div className="flex items-center relative z-10">
-                            <GraduationCap className="mr-3 h-6 w-6" />
+                            <GraduationCap className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6" />
                             ALLOCATE MENTORS TO PPTS
                           </div>
                         )}
@@ -651,27 +651,27 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                   ) : (
                     /* AI Assistant Chat */
                     <div className="bg-background border-4 border-primary shadow-brutal">
-                      <div className="border-b-2 border-primary p-4">
-                        <h3 className="font-space font-bold text-xl text-primary flex items-center">
-                          <Bot className="h-6 w-6 mr-2" />
+                      <div className="border-b-2 border-primary p-3 sm:p-4">
+                        <h3 className="font-space font-bold text-lg sm:text-xl text-primary flex items-center">
+                          <Bot className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
                           AI MENTOR ASSISTANT
                         </h3>
-                        <p className="font-inter text-primary/70 text-sm">
+                        <p className="font-inter text-primary/70 text-xs sm:text-sm">
                           Upload mentor documents or describe mentors in natural language
                         </p>
                       </div>
 
                       {/* File Upload Section */}
-                      <div className="p-4 border-b-2 border-primary bg-accent/10">
-                        <div className="flex space-x-4">
+                      <div className="p-3 sm:p-4 border-b-2 border-primary bg-accent/10">
+                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleFileUpload('pdf')}
                             disabled={isProcessingChat}
-                            className="flex-1 bg-secondary text-background py-3 px-4 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold flex items-center justify-center disabled:opacity-50"
+                            className="flex-1 bg-secondary text-background py-2 sm:py-3 px-3 sm:px-4 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold flex items-center justify-center disabled:opacity-50 text-xs sm:text-sm"
                           >
-                            <FileText className="h-5 w-5 mr-2" />
+                            <FileText className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
                             UPLOAD PDF
                           </motion.button>
                           <motion.button
@@ -679,28 +679,28 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleFileUpload('image')}
                             disabled={isProcessingChat}
-                            className="flex-1 bg-accent text-primary py-3 px-4 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold flex items-center justify-center disabled:opacity-50"
+                            className="flex-1 bg-accent text-primary py-2 sm:py-3 px-3 sm:px-4 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold flex items-center justify-center disabled:opacity-50 text-xs sm:text-sm"
                           >
-                            <Image className="h-5 w-5 mr-2" />
+                            <Image className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
                             UPLOAD IMAGE
                           </motion.button>
                         </div>
                       </div>
 
                       {/* Chat Messages */}
-                      <div className="h-64 overflow-y-auto p-4 space-y-3">
+                      <div className="h-48 sm:h-64 overflow-y-auto p-3 sm:p-4 space-y-3">
                         {chatMessages.length === 0 && (
-                          <div className="text-center py-8">
+                          <div className="text-center py-6 sm:py-8">
                             <motion.div
                               animate={{ y: [-5, 5, -5] }}
                               transition={{ duration: 2, repeat: Infinity }}
                             >
-                              <Sparkles className="h-12 w-12 text-secondary mx-auto mb-4" />
+                              <Sparkles className="h-10 w-10 sm:h-12 sm:w-12 text-secondary mx-auto mb-4" />
                             </motion.div>
-                            <h4 className="font-space font-bold text-primary mb-2">
+                            <h4 className="font-space font-bold text-primary mb-2 text-base sm:text-lg">
                               AI MENTOR EXTRACTION
                             </h4>
-                            <p className="font-inter text-primary/70 text-sm">
+                            <p className="font-inter text-primary/70 text-xs sm:text-sm">
                               Describe your mentors or upload documents containing mentor information
                             </p>
                           </div>
@@ -713,12 +713,12 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                             animate={{ opacity: 1, y: 0 }}
                             className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                           >
-                            <div className={`max-w-[80%] p-3 border-2 border-primary ${
+                            <div className={`max-w-[80%] p-2 sm:p-3 border-2 border-primary ${
                               message.type === 'user' 
                                 ? 'bg-secondary text-background' 
                                 : 'bg-accent/20 text-primary'
                             }`}>
-                              <div className="font-inter text-sm">
+                              <div className="font-inter text-xs sm:text-sm">
                                 {message.content}
                               </div>
                               <div className="font-inter text-xs opacity-70 mt-1 flex items-center space-x-1">
@@ -736,10 +736,10 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                             animate={{ opacity: 1, y: 0 }}
                             className="flex justify-start"
                           >
-                            <div className="bg-accent/20 text-primary p-3 border-2 border-primary">
+                            <div className="bg-accent/20 text-primary p-2 sm:p-3 border-2 border-primary">
                               <div className="flex items-center space-x-2">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                <span className="font-inter text-sm">Processing with AI...</span>
+                                <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                                <span className="font-inter text-xs sm:text-sm">Processing with AI...</span>
                               </div>
                             </div>
                           </motion.div>
@@ -747,7 +747,7 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                       </div>
 
                       {/* Chat Input */}
-                      <div className="p-4 border-t-2 border-primary">
+                      <div className="p-3 sm:p-4 border-t-2 border-primary">
                         <form onSubmit={handleChatSubmit} className="flex space-x-2">
                           <input
                             type="text"
@@ -755,16 +755,16 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                             onChange={(e) => setChatInput(e.target.value)}
                             placeholder="Describe your mentors (names, skills, expertise areas)..."
                             disabled={isProcessingChat}
-                            className="flex-1 px-3 py-2 border-2 border-primary focus:border-secondary focus:outline-none font-inter bg-background text-sm disabled:opacity-50"
+                            className="flex-1 px-3 py-2 border-2 border-primary focus:border-secondary focus:outline-none font-inter bg-background text-xs sm:text-sm disabled:opacity-50"
                           />
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             type="submit"
                             disabled={isProcessingChat || !chatInput.trim()}
-                            className="bg-secondary text-background px-4 py-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-bold text-sm disabled:opacity-50"
+                            className="bg-secondary text-background px-3 py-2 sm:px-4 sm:py-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-bold text-xs sm:text-sm disabled:opacity-50"
                           >
-                            <Send className="h-4 w-4" />
+                            <Send className="h-3 w-3 sm:h-4 sm:w-4" />
                           </motion.button>
                         </form>
                       </div>
@@ -792,10 +792,10 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="space-y-8"
+                  className="space-y-6 sm:space-y-8"
                 >
                   {/* Summary Statistics */}
-                  <div className="grid grid-cols-1 tablet:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                     {[
                       { 
                         label: 'TOTAL MENTORS', 
@@ -828,16 +828,16 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.1 }}
                         whileHover={{ scale: 1.02, y: -2 }}
-                        className={`${stat.color} border-4 shadow-brutal p-6 text-center relative overflow-hidden group`}
+                        className={`${stat.color} border-4 shadow-brutal p-4 sm:p-6 text-center relative overflow-hidden group`}
                       >
                         <motion.div
                           className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         />
-                        <stat.icon className="h-8 w-8 text-primary mx-auto mb-4 relative z-10" />
-                        <div className="font-space font-bold text-3xl text-primary mb-2 relative z-10">
+                        <stat.icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary mx-auto mb-2 sm:mb-4 relative z-10" />
+                        <div className="font-space font-bold text-xl sm:text-3xl text-primary mb-1 sm:mb-2 relative z-10">
                           {stat.value}
                         </div>
-                        <div className="font-inter font-semibold text-primary text-sm relative z-10">
+                        <div className="font-inter font-semibold text-primary text-xs sm:text-sm relative z-10">
                           {stat.label}
                         </div>
                       </motion.div>
@@ -845,30 +845,30 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                   </div>
 
                   {/* Export Actions */}
-                  <div className="flex justify-center space-x-4">
+                  <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={exportToCSV}
-                      className="bg-accent text-primary px-6 py-3 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold flex items-center"
+                      className="bg-accent text-primary px-4 py-2 sm:px-6 sm:py-3 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold flex items-center justify-center text-xs sm:text-sm"
                     >
-                      <Download className="h-5 w-5 mr-2" />
+                      <Download className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
                       EXPORT CSV
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={copyAllocationData}
-                      className="bg-secondary text-background px-6 py-3 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold flex items-center"
+                      className="bg-secondary text-background px-4 py-2 sm:px-6 sm:py-3 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold flex items-center justify-center text-xs sm:text-sm"
                     >
-                      {copiedData ? <Check className="h-5 w-5 mr-2" /> : <Copy className="h-5 w-5 mr-2" />}
+                      {copiedData ? <Check className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" /> : <Copy className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />}
                       {copiedData ? 'COPIED!' : 'COPY DATA'}
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={resetForm}
-                      className="bg-primary text-background px-6 py-3 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold"
+                      className="bg-primary text-background px-4 py-2 sm:px-6 sm:py-3 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold text-xs sm:text-sm"
                     >
                       NEW ALLOCATION
                     </motion.button>
@@ -876,15 +876,15 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
 
                   {/* Allocation Results */}
                   <div className="bg-background border-4 border-primary shadow-brutal">
-                    <div className="border-b-2 border-primary p-4">
-                      <h3 className="font-space font-bold text-xl text-primary flex items-center">
-                        <Award className="h-6 w-6 mr-2" />
+                    <div className="border-b-2 border-primary p-3 sm:p-4">
+                      <h3 className="font-space font-bold text-lg sm:text-xl text-primary flex items-center">
+                        <Award className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
                         MENTOR-PPT ALLOCATION RESULTS
                       </h3>
                     </div>
 
-                    <div className="p-6">
-                      <div className="grid grid-cols-1 desktop:grid-cols-2 gap-6">
+                    <div className="p-4 sm:p-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                         {allocationResult!.allocations.map((allocation, index) => (
                           <motion.div
                             key={index}
@@ -892,30 +892,30 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
                             whileHover={{ scale: 1.02, boxShadow: '12px 12px 0px #000000' }}
-                            className="bg-background border-4 border-primary shadow-brutal p-6 relative group"
+                            className="bg-background border-4 border-primary shadow-brutal p-4 sm:p-6 relative group"
                           >
                             {/* Match Score Badge */}
-                            <div className="absolute top-4 right-4">
-                              <div className={`px-3 py-1 border-2 border-primary text-sm font-bold ${getMatchScoreColor(allocation.matchScore)}`}>
+                            <div className="absolute top-3 sm:top-4 right-3 sm:right-4">
+                              <div className={`px-2 py-1 sm:px-3 sm:py-1 border-2 border-primary text-xs sm:text-sm font-bold ${getMatchScoreColor(allocation.matchScore)}`}>
                                 {allocation.matchScore.toFixed(1)}% MATCH
                               </div>
                             </div>
 
                             {/* Mentor Info */}
                             <div className="mb-4">
-                              <h4 className="font-space font-bold text-lg text-primary mb-2">
+                              <h4 className="font-space font-bold text-base sm:text-lg text-primary mb-2">
                                 {allocation.mentorName}
                               </h4>
                               <div className="flex items-center space-x-2 mb-3">
-                                <Mail className="h-4 w-4 text-primary/50" />
-                                <span className="font-inter text-primary/70 text-sm">
+                                <Mail className="h-3 w-3 sm:h-4 sm:w-4 text-primary/50" />
+                                <span className="font-inter text-primary/70 text-xs sm:text-sm">
                                   {allocation.mentorEmail}
                                 </span>
                               </div>
                               
                               {/* Mentor Skills */}
                               <div className="mb-3">
-                                <h5 className="font-inter font-semibold text-primary text-sm mb-2">MENTOR SKILLS:</h5>
+                                <h5 className="font-inter font-semibold text-primary text-xs sm:text-sm mb-2">MENTOR SKILLS:</h5>
                                 <div className="flex flex-wrap gap-1">
                                   {allocation.mentorSkills.map((skill, skillIndex) => (
                                     <span
@@ -935,8 +935,8 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
 
                             {/* PPT Info */}
                             <div className="border-t-2 border-primary pt-4">
-                              <div className="flex justify-between items-center mb-2">
-                                <h5 className="font-inter font-semibold text-primary">
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 space-y-2 sm:space-y-0">
+                                <h5 className="font-inter font-semibold text-primary text-xs sm:text-sm">
                                   ASSIGNED PPT: {allocation.teamId}
                                 </h5>
                                 
@@ -945,7 +945,7 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                                   href={allocation.pdfDownloadLink || `https://server.aimliedc.tech/h4b-pdf-idea/get-pdf/${allocation.teamId}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="bg-secondary text-background px-2 py-1 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 text-xs font-inter font-bold flex items-center"
+                                  className="bg-secondary text-background px-2 py-1 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 text-xs font-inter font-bold flex items-center self-start"
                                 >
                                   <Download className="h-3 w-3 mr-1" />
                                   PDF
@@ -955,7 +955,7 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                               
                               {/* PPT Keywords */}
                               <div>
-                                <h6 className="font-inter font-semibold text-primary text-sm mb-2">PPT KEYWORDS:</h6>
+                                <h6 className="font-inter font-semibold text-primary text-xs sm:text-sm mb-2">PPT KEYWORDS:</h6>
                                 <div className="flex flex-wrap gap-1">
                                   {allocation.pptKeywords.map((keyword, keywordIndex) => (
                                     <span
@@ -990,10 +990,10 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
             </div>
 
             {/* Footer */}
-            <div className="border-t-4 border-primary p-6 bg-primary/5">
-              <div className="flex flex-col tablet:flex-row justify-between items-center space-y-4 tablet:space-y-0">
-                <div className="text-center tablet:text-left">
-                  <p className="font-inter text-primary/70 text-sm">
+            <div className="border-t-4 border-primary p-4 sm:p-6 bg-primary/5">
+              <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+                <div className="text-center sm:text-left">
+                  <p className="font-inter text-primary/70 text-xs sm:text-sm">
                     Hackathon ID: {hackathonId}
                   </p>
                   <p className="font-inter text-primary/60 text-xs">
@@ -1005,7 +1005,7 @@ export default function MentorAllocationModal({ hackathonId, hackathonName, isOp
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={onClose}
-                  className="bg-background text-primary px-6 py-3 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold"
+                  className="bg-background text-primary px-4 py-2 sm:px-6 sm:py-3 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs sm:text-sm"
                 >
                   CLOSE
                 </motion.button>

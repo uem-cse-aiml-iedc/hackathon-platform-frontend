@@ -26,6 +26,12 @@ export default {
         'brutal': '0px',
       },
       screens: {
+        'xs': '320px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
         'mobile': '320px',
         'tablet': '481px',
         'desktop': '769px',

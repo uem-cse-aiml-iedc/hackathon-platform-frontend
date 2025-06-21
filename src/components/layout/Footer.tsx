@@ -10,17 +10,17 @@ export default function Footer() {
       animate={{ opacity: 1 }}
       transition={{ delay: 0.5 }}
     >
-      <div className="max-w-7xl mx-auto px-brutal py-12">
-        <div className="grid grid-cols-1 tablet:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-brutal py-8 sm:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
-          <div className="tablet:col-span-2">
+          <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <Code2 className="h-8 w-8 text-accent" />
-              <span className="font-space font-bold text-xl text-background">
+              <Code2 className="h-6 w-6 sm:h-8 sm:w-8 text-accent" />
+              <span className="font-space font-bold text-lg sm:text-xl text-background">
                 HACKNEST
               </span>
             </div>
-            <p className="font-inter text-background/80 mb-6 max-w-md">
+            <p className="font-inter text-background/80 mb-6 max-w-md text-sm sm:text-base">
               The premier platform for discovering and participating in hackathons worldwide. 
               Build, compete, and innovate with developers from around the globe.
             </p>
@@ -31,7 +31,7 @@ export default function Footer() {
                 whileTap={{ scale: 0.9 }}
                 className="bg-background text-primary p-2 border-2 border-background shadow-brutal-sm hover:bg-accent hover:text-primary transition-all duration-200"
               >
-                <Github className="h-5 w-5" />
+                <Github className="h-4 w-4 sm:h-5 sm:w-5" />
               </motion.a>
               <motion.a
                 href="#"
@@ -39,7 +39,7 @@ export default function Footer() {
                 whileTap={{ scale: 0.9 }}
                 className="bg-background text-primary p-2 border-2 border-background shadow-brutal-sm hover:bg-accent hover:text-primary transition-all duration-200"
               >
-                <Twitter className="h-5 w-5" />
+                <Twitter className="h-4 w-4 sm:h-5 sm:w-5" />
               </motion.a>
               <motion.a
                 href="#"
@@ -47,14 +47,14 @@ export default function Footer() {
                 whileTap={{ scale: 0.9 }}
                 className="bg-background text-primary p-2 border-2 border-background shadow-brutal-sm hover:bg-accent hover:text-primary transition-all duration-200"
               >
-                <Linkedin className="h-5 w-5" />
+                <Linkedin className="h-4 w-4 sm:h-5 sm:w-5" />
               </motion.a>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="font-space font-bold text-lg text-background mb-4">
+          <div className="mt-8 md:mt-0">
+            <h3 className="font-space font-bold text-base sm:text-lg text-background mb-4">
               QUICK LINKS
             </h3>
             <ul className="space-y-2">
@@ -62,7 +62,7 @@ export default function Footer() {
                 <li key={link}>
                   <a 
                     href="#" 
-                    className="font-inter text-background/80 hover:text-accent transition-colors duration-200"
+                    className="font-inter text-background/80 hover:text-accent transition-colors duration-200 text-sm sm:text-base"
                   >
                     {link}
                   </a>
@@ -72,8 +72,8 @@ export default function Footer() {
           </div>
 
           {/* Support */}
-          <div>
-            <h3 className="font-space font-bold text-lg text-background mb-4">
+          <div className="mt-8 md:mt-0">
+            <h3 className="font-space font-bold text-base sm:text-lg text-background mb-4">
               SUPPORT
             </h3>
             <ul className="space-y-2">
@@ -81,7 +81,7 @@ export default function Footer() {
                 <li key={link}>
                   <a 
                     href="#" 
-                    className="font-inter text-background/80 hover:text-accent transition-colors duration-200"
+                    className="font-inter text-background/80 hover:text-accent transition-colors duration-200 text-sm sm:text-base"
                   >
                     {link}
                   </a>
@@ -92,11 +92,11 @@ export default function Footer() {
         </div>
 
         <div className="border-t-2 border-background/20 mt-8 pt-8">
-          <div className="flex flex-col tablet:flex-row justify-between items-center">
-            <p className="font-inter text-background/60">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="font-inter text-background/60 text-xs sm:text-sm">
               © 2024 HackNest. All rights reserved.
             </p>
-            <p className="font-inter text-background/60 mt-2 tablet:mt-0">
+            <p className="font-inter text-background/60 mt-2 md:mt-0 text-xs sm:text-sm">
               Built with 💚 for the developer community
             </p>
           </div>

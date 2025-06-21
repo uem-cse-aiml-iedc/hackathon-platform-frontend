@@ -400,7 +400,7 @@ export default function AIAssistant({
     <>
       {/* AI Assistant Toggle Button - Prominent USP */}
       <motion.div
-        className="fixed bottom-6 right-6 z-50"
+        className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.5, type: "spring", stiffness: 300 }}
@@ -409,28 +409,28 @@ export default function AIAssistant({
           onClick={() => setIsOpen(!isOpen)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="bg-gradient-to-r from-secondary to-accent text-background p-4 border-4 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 relative overflow-hidden group"
+          className="bg-gradient-to-r from-secondary to-accent text-background p-3 sm:p-4 border-4 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 relative overflow-hidden group"
         >
           <motion.div
             className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-20 transition-opacity duration-300"
           />
           
-          <div className="flex items-center space-x-3 relative z-10">
+          <div className="flex items-center space-x-2 sm:space-x-3 relative z-10">
             <motion.div
               animate={{ rotate: isOpen ? 180 : 0 }}
               transition={{ duration: 0.3 }}
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Bot className="h-6 w-6" />}
+              {isOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Bot className="h-5 w-5 sm:h-6 sm:w-6" />}
             </motion.div>
-            <div className="hidden tablet:block">
-              <div className="font-space font-bold text-sm">{getHeaderText()}</div>
+            <div className="hidden sm:block">
+              <div className="font-space font-bold text-xs sm:text-sm">{getHeaderText()}</div>
               <div className="font-inter text-xs opacity-90">1-Click Fill</div>
             </div>
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Sparkles className="h-4 w-4" />
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
             </motion.div>
           </div>
 
@@ -453,20 +453,20 @@ export default function AIAssistant({
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 400, scale: 0.8 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-6 right-6 w-96 max-w-[90vw] h-[600px] bg-background border-4 border-primary shadow-brutal z-40 flex flex-col"
+            className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 w-[90vw] sm:w-96 max-w-[90vw] h-[80vh] sm:h-[600px] bg-background border-4 border-primary shadow-brutal z-40 flex flex-col"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-secondary to-accent text-background p-4 border-b-4 border-primary">
+            <div className="bg-gradient-to-r from-secondary to-accent text-background p-3 sm:p-4 border-b-4 border-primary">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <motion.div
                     animate={{ rotate: [0, 360] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                   >
-                    <Bot className="h-6 w-6" />
+                    <Bot className="h-5 w-5 sm:h-6 sm:w-6" />
                   </motion.div>
                   <div>
-                    <h3 className="font-space font-bold text-lg">{getHeaderText()}</h3>
+                    <h3 className="font-space font-bold text-base sm:text-lg">{getHeaderText()}</h3>
                     <p className="font-inter text-xs opacity-90">{getSubHeaderText()}</p>
                   </div>
                 </div>
@@ -482,8 +482,8 @@ export default function AIAssistant({
             </div>
 
             {/* Input Methods */}
-            <div className="p-4 border-b-2 border-primary bg-accent/10">
-              <p className="font-inter text-sm text-primary mb-3 font-semibold">
+            <div className="p-3 sm:p-4 border-b-2 border-primary bg-accent/10">
+              <p className="font-inter text-xs sm:text-sm text-primary mb-2 sm:mb-3 font-semibold">
                 🚀 Choose your input method:
               </p>
               <div className="grid grid-cols-2 gap-2 mb-3">
@@ -492,9 +492,9 @@ export default function AIAssistant({
                   whileTap={{ scale: 0.95 }}
                   onClick={() => imageInputRef.current?.click()}
                   disabled={isProcessing || recording.isRecording}
-                  className="flex items-center space-x-2 bg-background text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs disabled:opacity-50"
+                  className="flex items-center justify-center space-x-1 sm:space-x-2 bg-background text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs disabled:opacity-50"
                 >
-                  <Image className="h-4 w-4" />
+                  <Image className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>IMAGE</span>
                 </motion.button>
 
@@ -503,9 +503,9 @@ export default function AIAssistant({
                   whileTap={{ scale: 0.95 }}
                   onClick={() => audioInputRef.current?.click()}
                   disabled={isProcessing || recording.isRecording}
-                  className="flex items-center space-x-2 bg-background text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs disabled:opacity-50"
+                  className="flex items-center justify-center space-x-1 sm:space-x-2 bg-background text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs disabled:opacity-50"
                 >
-                  <Mic className="h-4 w-4" />
+                  <Mic className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>AUDIO</span>
                 </motion.button>
 
@@ -514,9 +514,9 @@ export default function AIAssistant({
                   whileTap={{ scale: 0.95 }}
                   onClick={() => videoInputRef.current?.click()}
                   disabled={isProcessing || recording.isRecording}
-                  className="flex items-center space-x-2 bg-background text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs disabled:opacity-50"
+                  className="flex items-center justify-center space-x-1 sm:space-x-2 bg-background text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs disabled:opacity-50"
                 >
-                  <Video className="h-4 w-4" />
+                  <Video className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>VIDEO</span>
                 </motion.button>
 
@@ -525,15 +525,15 @@ export default function AIAssistant({
                   whileTap={{ scale: 0.95 }}
                   onClick={() => pdfInputRef.current?.click()}
                   disabled={isProcessing || recording.isRecording}
-                  className="flex items-center space-x-2 bg-background text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs disabled:opacity-50"
+                  className="flex items-center justify-center space-x-1 sm:space-x-2 bg-background text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs disabled:opacity-50"
                 >
-                  <FileText className="h-4 w-4" />
+                  <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>PDF</span>
                 </motion.button>
               </div>
 
               {/* Live Recording Controls */}
-              <div className="border-t-2 border-primary pt-3">
+              <div className="border-t-2 border-primary pt-2 sm:pt-3">
                 <p className="font-inter text-xs text-primary mb-2 font-semibold">
                   🎤 LIVE RECORDING:
                 </p>
@@ -544,9 +544,9 @@ export default function AIAssistant({
                     whileTap={{ scale: 0.95 }}
                     onClick={startRecording}
                     disabled={isProcessing}
-                    className="w-full flex items-center justify-center space-x-2 bg-secondary text-background p-3 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-bold text-sm disabled:opacity-50"
+                    className="w-full flex items-center justify-center space-x-1 sm:space-x-2 bg-secondary text-background p-2 sm:p-3 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-bold text-xs sm:text-sm disabled:opacity-50"
                   >
-                    <Mic className="h-5 w-5" />
+                    <Mic className="h-4 w-4 sm:h-5 sm:w-5" />
                     <span>START RECORDING</span>
                   </motion.button>
                 ) : (
@@ -558,9 +558,9 @@ export default function AIAssistant({
                           animate={{ scale: [1, 1.2, 1] }}
                           transition={{ duration: 1, repeat: Infinity }}
                         >
-                          {recording.isPaused ? <MicOff className="h-4 w-4 text-secondary" /> : <Mic className="h-4 w-4 text-secondary" />}
+                          {recording.isPaused ? <MicOff className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" /> : <Mic className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />}
                         </motion.div>
-                        <span className="font-inter font-bold text-primary text-sm">
+                        <span className="font-inter font-bold text-primary text-xs sm:text-sm">
                           {recording.isPaused ? 'PAUSED' : 'RECORDING'}
                         </span>
                       </div>
@@ -574,7 +574,7 @@ export default function AIAssistant({
 
                     {/* Live Transcript */}
                     {recording.transcript && (
-                      <div className="bg-accent/10 border border-primary p-2 max-h-16 overflow-y-auto">
+                      <div className="bg-accent/10 border border-primary p-2 max-h-12 sm:max-h-16 overflow-y-auto">
                         <p className="font-inter text-xs text-primary">
                           "{recording.transcript}"
                         </p>
@@ -590,7 +590,7 @@ export default function AIAssistant({
                           onClick={pauseRecording}
                           className="flex-1 flex items-center justify-center space-x-1 bg-background text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs"
                         >
-                          <Pause className="h-4 w-4" />
+                          <Pause className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span>PAUSE</span>
                         </motion.button>
                       ) : (
@@ -600,7 +600,7 @@ export default function AIAssistant({
                           onClick={resumeRecording}
                           className="flex-1 flex items-center justify-center space-x-1 bg-accent text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs"
                         >
-                          <Play className="h-4 w-4" />
+                          <Play className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span>RESUME</span>
                         </motion.button>
                       )}
@@ -611,7 +611,7 @@ export default function AIAssistant({
                         onClick={stopRecording}
                         className="flex-1 flex items-center justify-center space-x-1 bg-secondary text-background p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-semibold text-xs"
                       >
-                        <Square className="h-4 w-4" />
+                        <Square className="h-3 w-3 sm:h-4 sm:w-4" />
                         <span>STOP</span>
                       </motion.button>
                     </div>
@@ -621,19 +621,19 @@ export default function AIAssistant({
             </div>
 
             {/* Conversation Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
               {conversation.length === 0 && (
-                <div className="text-center py-8">
+                <div className="text-center py-6 sm:py-8">
                   <motion.div
                     animate={{ y: [-5, 5, -5] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <Zap className="h-12 w-12 text-secondary mx-auto mb-4" />
+                    <Zap className="h-10 w-10 sm:h-12 sm:w-12 text-secondary mx-auto mb-4" />
                   </motion.div>
-                  <h4 className="font-space font-bold text-primary mb-2">
+                  <h4 className="font-space font-bold text-primary mb-2 text-base sm:text-lg">
                     {welcomeMessage.title}
                   </h4>
-                  <p className="font-inter text-primary/70 text-sm">
+                  <p className="font-inter text-primary/70 text-xs sm:text-sm px-2">
                     {welcomeMessage.description}
                   </p>
                 </div>
@@ -646,12 +646,12 @@ export default function AIAssistant({
                   animate={{ opacity: 1, y: 0 }}
                   className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`max-w-[80%] p-3 border-2 border-primary ${
+                  <div className={`max-w-[80%] p-2 sm:p-3 border-2 border-primary ${
                     message.type === 'user' 
                       ? 'bg-secondary text-background' 
                       : 'bg-accent/20 text-primary'
                   }`}>
-                    <div className="font-inter text-sm">
+                    <div className="font-inter text-xs sm:text-sm">
                       {message.content}
                     </div>
                     <div className="font-inter text-xs opacity-70 mt-1 flex items-center space-x-1">
@@ -668,10 +668,10 @@ export default function AIAssistant({
                   animate={{ opacity: 1, y: 0 }}
                   className="flex justify-start"
                 >
-                  <div className="bg-accent/20 text-primary p-3 border-2 border-primary">
+                  <div className="bg-accent/20 text-primary p-2 sm:p-3 border-2 border-primary">
                     <div className="flex items-center space-x-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span className="font-inter text-sm">Processing with AI...</span>
+                      <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                      <span className="font-inter text-xs sm:text-sm">Processing with AI...</span>
                     </div>
                   </div>
                 </motion.div>
@@ -679,7 +679,7 @@ export default function AIAssistant({
             </div>
 
             {/* Text Input */}
-            <div className="p-4 border-t-2 border-primary">
+            <div className="p-3 sm:p-4 border-t-2 border-primary">
               <form onSubmit={handleTextSubmit} className="flex space-x-2">
                 <input
                   type="text"
@@ -687,16 +687,16 @@ export default function AIAssistant({
                   onChange={(e) => setTextInput(e.target.value)}
                   placeholder={mode === 'participant' ? 'Describe yourself...' : 'Describe your hackathon...'}
                   disabled={isProcessing || recording.isRecording}
-                  className="flex-1 px-3 py-2 border-2 border-primary focus:border-secondary focus:outline-none font-inter bg-background text-sm disabled:opacity-50"
+                  className="flex-1 px-3 py-2 border-2 border-primary focus:border-secondary focus:outline-none font-inter bg-background text-xs sm:text-sm disabled:opacity-50"
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
                   disabled={isProcessing || !textInput.trim() || recording.isRecording}
-                  className="bg-secondary text-background px-4 py-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-bold text-sm disabled:opacity-50"
+                  className="bg-secondary text-background px-3 sm:px-4 py-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200 font-inter font-bold text-xs sm:text-sm disabled:opacity-50"
                 >
-                  <MessageSquare className="h-4 w-4" />
+                  <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
                 </motion.button>
               </form>
             </div>
@@ -711,12 +711,12 @@ export default function AIAssistant({
               onDragOver={handleDrag}
               onDrop={handleDrop}
             >
-              <div className="text-center">
-                <Upload className="h-16 w-16 text-primary mx-auto mb-4" />
-                <h3 className="font-space font-bold text-xl text-primary mb-2">
+              <div className="text-center px-4">
+                <Upload className="h-12 w-12 sm:h-16 sm:w-16 text-primary mx-auto mb-4" />
+                <h3 className="font-space font-bold text-lg sm:text-xl text-primary mb-2">
                   DROP YOUR FILE HERE
                 </h3>
-                <p className="font-inter text-primary/80">
+                <p className="font-inter text-primary/80 text-xs sm:text-sm">
                   {mode === 'participant' ? 'Resume, Portfolio, Images, Audio, Video, or PDF files' : 'Images, Audio, Video, or PDF files'}
                 </p>
               </div>
