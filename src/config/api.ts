@@ -5,6 +5,8 @@ export const API_CONFIG = {
     HACKATHON: '/hackathon',
     REGISTER: '/register',
     TEAM: '/team',
+    LOGISTICS: '/logistics',
+    ALLOCATION: '/allocation',
   },
 } as const;
 
@@ -22,4 +24,8 @@ export const API_URLS = {
   JOIN_TEAM: `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.TEAM}?option=join-team`,
   SUBMIT_TEAM: `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.TEAM}?option=submit-team`,
   CHECK_TEAM_PRESENCE: `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.TEAM}?option=check-team-presence`,
+  ADD_LOGISTICS: `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.LOGISTICS}?option=add-logistics`,
+  FETCH_LOGISTICS: `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.LOGISTICS}?option=fetch-logistics`,
+  VOLUNTEER_ASSIGN: `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.LOGISTICS}?option=volunteer`,
+  ALLOCATE_TEAMS: `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ALLOCATION}?option=allocate-teams`,
 } as const;

@@ -1,16 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Calendar, Users, Trophy, Edit, Eye, Trash2, Settings, Zap, Target, MapPin, Clock } from 'lucide-react';
+import { Plus, Calendar, Users, Trophy, Edit, Eye, Trash2, Settings, Zap, Target, MapPin, Clock, Truck, Building, GraduationCap } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { HackathonService, Hackathon } from '../../services/hackathonService';
+import LogisticsManagement from '../logistics/LogisticsManagement';
+import RoomAllocationModal from '../room/RoomAllocationModal';
+import MentorAllocationModal from '../mentor/MentorAllocationModal';
 
 export default function OrganizerDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [createdHackathons, setCreatedHackathons] = useState<Hackathon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [logisticsModal, setLogisticsModal] = useState<{
+    isOpen: boolean;
+    hackathonId: string;
+    hackathonName: string;
+  }>({
+    isOpen: false,
+    hackathonId: '',
+    hackathonName: '',
+  });
+  const [roomAllocationModal, setRoomAllocationModal] = useState<{
+    isOpen: boolean;
+    hackathonId: string;
+    hackathonName: string;
+  }>({
+    isOpen: false,
+    hackathonId: '',
+    hackathonName: '',
+  });
+  const [mentorAllocationModal, setMentorAllocationModal] = useState<{
+    isOpen: boolean;
+    hackathonId: string;
+    hackathonName: string;
+  }>({
+    isOpen: false,
+    hackathonId: '',
+    hackathonName: '',
+  });
   const { currentUser } = useAuth();
   const { showError, showSuccess } = useToast();
   const navigate = useNavigate();
@@ -104,6 +134,57 @@ export default function OrganizerDashboard() {
       // TODO: Implement delete functionality when backend supports it
       showError('Delete Not Available', 'Delete functionality will be available soon');
     }
+  };
+
+  const handleLogisticsManagement = (hackathonId: string, hackathonName: string) => {
+    console.log('Opening logistics management for:', hackathonId, hackathonName);
+    setLogisticsModal({
+      isOpen: true,
+      hackathonId,
+      hackathonName,
+    });
+  };
+
+  const closeLogisticsModal = () => {
+    setLogisticsModal({
+      isOpen: false,
+      hackathonId: '',
+      hackathonName: '',
+    });
+  };
+
+  const handleRoomAllocation = (hackathonId: string, hackathonName: string) => {
+    console.log('Opening room allocation for:', hackathonId, hackathonName);
+    setRoomAllocationModal({
+      isOpen: true,
+      hackathonId,
+      hackathonName,
+    });
+  };
+
+  const closeRoomAllocationModal = () => {
+    setRoomAllocationModal({
+      isOpen: false,
+      hackathonId: '',
+      hackathonName: '',
+    });
+  };
+
+  const handleMentorAllocation = (hackathonId: string, hackathonName: string) => {
+    console.log('Opening mentor allocation for:', hackathonId, hackathonName);
+    setMentorAllocationModal({
+      isOpen: true,
+      hackathonId,
+      hackathonName,
+    });
+  };
+
+  const closeMentorAllocationModal = () => {
+    setMentorAllocationModal({
+      isOpen: false,
+      hackathonId: '',
+      hackathonName: '',
+    });
   };
 
   // Calculate stats from fetched hackathons
@@ -206,7 +287,7 @@ export default function OrganizerDashboard() {
           ))}
         </div>
 
-        {/* Create Hackathon Card - Super Cool Design - Now Fully Clickable */}
+        {/* Create Hackathon Card - Sophisticated Neo-Brutal Design */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -220,11 +301,11 @@ export default function OrganizerDashboard() {
                 boxShadow: '20px 20px 0px rgba(0,0,0,0.8)',
               }}
               whileTap={{ scale: 0.98 }}
-              className="bg-gradient-to-br from-accent via-secondary to-primary border-4 border-primary shadow-brutal p-8 relative overflow-hidden group cursor-pointer transition-all duration-300"
+              className="bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900 border-4 border-primary shadow-brutal p-8 relative overflow-hidden group cursor-pointer transition-all duration-300"
             >
-              {/* Animated Background Elements */}
+              {/* Sophisticated Background Elements */}
               <motion.div
-                className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-xl"
+                className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/20 rounded-full blur-xl"
                 animate={{ 
                   scale: [1, 1.2, 1],
                   opacity: [0.3, 0.6, 0.3]
@@ -232,12 +313,21 @@ export default function OrganizerDashboard() {
                 transition={{ duration: 4, repeat: Infinity }}
               />
               <motion.div
-                className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-xl"
+                className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-400/20 rounded-full blur-xl"
                 animate={{ 
                   scale: [1.2, 1, 1.2],
                   opacity: [0.6, 0.3, 0.6]
                 }}
                 transition={{ duration: 3, repeat: Infinity }}
+              />
+              <motion.div
+                className="absolute top-1/2 left-1/2 w-16 h-16 bg-violet-400/20 rounded-full blur-lg"
+                animate={{ 
+                  x: [-20, 20, -20],
+                  y: [-10, 10, -10],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ duration: 5, repeat: Infinity }}
               />
 
               <div className="relative z-10 flex flex-col tablet:flex-row items-center justify-between">
@@ -246,15 +336,15 @@ export default function OrganizerDashboard() {
                     whileHover={{ scale: 1.05 }}
                     className="inline-block mb-4"
                   >
-                    <div className="bg-background border-4 border-primary p-4 inline-block shadow-brutal">
+                    <div className="bg-white border-4 border-primary p-4 inline-block shadow-brutal">
                       <Plus className="h-12 w-12 text-primary" />
                     </div>
                   </motion.div>
                   
-                  <h2 className="font-space font-bold text-3xl tablet:text-4xl text-background mb-4">
+                  <h2 className="font-space font-bold text-3xl tablet:text-4xl text-white mb-4">
                     CREATE NEW HACKATHON
                   </h2>
-                  <p className="font-inter text-background/90 text-lg max-w-md">
+                  <p className="font-inter text-slate-200 text-lg max-w-md">
                     Launch your next coding competition and bring together innovative minds from around the world
                   </p>
                   
@@ -265,7 +355,7 @@ export default function OrganizerDashboard() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 1 + index * 0.1 }}
-                        className="bg-background/20 text-background px-3 py-1 text-sm font-inter font-medium border border-background/30 backdrop-blur-sm"
+                        className="bg-white/20 text-white px-3 py-1 text-sm font-inter font-medium border border-white/30 backdrop-blur-sm"
                       >
                         {feature}
                       </motion.span>
@@ -276,10 +366,10 @@ export default function OrganizerDashboard() {
                 <div className="flex flex-col space-y-4">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
-                    className="bg-background text-primary px-8 py-4 border-4 border-primary shadow-brutal transition-all duration-200 font-inter font-bold text-lg inline-flex items-center relative overflow-hidden group"
+                    className="bg-white text-primary px-8 py-4 border-4 border-primary shadow-brutal transition-all duration-200 font-inter font-bold text-lg inline-flex items-center relative overflow-hidden group"
                   >
                     <motion.div
-                      className="absolute inset-0 bg-accent opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                      className="absolute inset-0 bg-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
                     />
                     <Target className="mr-3 h-6 w-6 relative z-10" />
                     <span className="relative z-10">START CREATING</span>
@@ -287,7 +377,7 @@ export default function OrganizerDashboard() {
                   
                   <motion.div
                     whileHover={{ scale: 1.05 }}
-                    className="bg-transparent text-background px-8 py-3 border-2 border-background hover:bg-background/10 transition-all duration-200 font-inter font-semibold inline-flex items-center"
+                    className="bg-transparent text-white px-8 py-3 border-2 border-white hover:bg-white/10 transition-all duration-200 font-inter font-semibold inline-flex items-center"
                   >
                     <Eye className="mr-2 h-5 w-5" />
                     VIEW TEMPLATES
@@ -297,7 +387,7 @@ export default function OrganizerDashboard() {
 
               {/* Click indicator */}
               <motion.div
-                className="absolute top-4 right-4 bg-background/20 text-background px-3 py-1 text-xs font-inter font-bold border border-background/30 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute top-4 right-4 bg-white/20 text-white px-3 py-1 text-xs font-inter font-bold border border-white/30 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 initial={{ scale: 0.8 }}
                 whileHover={{ scale: 1 }}
               >
@@ -421,29 +511,45 @@ export default function OrganizerDashboard() {
                           whileHover={{ scale: 1.02, boxShadow: '12px 12px 0px #000000' }}
                           className="bg-background border-4 border-primary shadow-brutal p-6 relative group"
                         >
-                          {/* Status Badge */}
+                          {/* Status Badge and Action Buttons */}
                           <div className="flex justify-between items-start mb-4">
                             <span className={`px-3 py-1 text-xs font-inter font-bold border-2 border-primary ${getStatusColor(status)}`}>
                               {status.toUpperCase()}
                             </span>
-                            <div className="flex space-x-2">
+                            
+                            {/* Action Buttons Row */}
+                            <div className="flex space-x-1">
+                              {/* Logistics Management Button */}
                               <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                                onClick={() => handleManageHackathon(hackathon.hackathonId)}
-                                className="bg-accent text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200"
-                                title="Manage Hackathon"
-                              >
-                                <Settings className="h-4 w-4" />
-                              </motion.button>
-                              <motion.button
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => handleViewHackathon(hackathon.hackathonId)}
+                                onClick={() => handleLogisticsManagement(hackathon.hackathonId, hackathon.hackathonName)}
                                 className="bg-secondary text-background p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200"
-                                title="View Details"
+                                title="Logistics Management"
                               >
-                                <Eye className="h-4 w-4" />
+                                <Truck className="h-4 w-4" />
+                              </motion.button>
+
+                              {/* Room Allocation Button */}
+                              <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => handleRoomAllocation(hackathon.hackathonId, hackathon.hackathonName)}
+                                className="bg-accent text-primary p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200"
+                                title="Room Allocation Help"
+                              >
+                                <Building className="h-4 w-4" />
+                              </motion.button>
+
+                              {/* Mentor Allocation Button */}
+                              <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => handleMentorAllocation(hackathon.hackathonId, hackathon.hackathonName)}
+                                className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-2 border-2 border-primary shadow-brutal-sm hover:shadow-brutal transition-all duration-200"
+                                title="Mentor-PPT Allocation"
+                              >
+                                <GraduationCap className="h-4 w-4" />
                               </motion.button>
                             </div>
                           </div>
@@ -452,7 +558,7 @@ export default function OrganizerDashboard() {
                           <h4 className="font-space font-bold text-xl text-primary mb-2">
                             {hackathon.hackathonName}
                           </h4>
-                          <p className="font-inter text-primary/70 text-sm mb-4 line-clamp-2">
+                          <p className="font-inter text-primary/70 text-sm line-clamp-2 mb-3 min-h-[2.5rem]">
                             {hackathon.tagline}
                           </p>
 
@@ -573,6 +679,30 @@ export default function OrganizerDashboard() {
           </div>
         </div>
       </motion.div>
+
+      {/* Logistics Management Modal */}
+      <LogisticsManagement
+        hackathonId={logisticsModal.hackathonId}
+        hackathonName={logisticsModal.hackathonName}
+        isOpen={logisticsModal.isOpen}
+        onClose={closeLogisticsModal}
+      />
+
+      {/* Room Allocation Modal */}
+      <RoomAllocationModal
+        hackathonId={roomAllocationModal.hackathonId}
+        hackathonName={roomAllocationModal.hackathonName}
+        isOpen={roomAllocationModal.isOpen}
+        onClose={closeRoomAllocationModal}
+      />
+
+      {/* Mentor Allocation Modal */}
+      <MentorAllocationModal
+        hackathonId={mentorAllocationModal.hackathonId}
+        hackathonName={mentorAllocationModal.hackathonName}
+        isOpen={mentorAllocationModal.isOpen}
+        onClose={closeMentorAllocationModal}
+      />
     </div>
   );
 }

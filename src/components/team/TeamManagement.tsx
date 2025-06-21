@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,13 +22,17 @@ import {
   Loader2,
   Target,
   Shield,
-  Zap
+  Zap,
+  Upload,
+  FileText,
+  Download
 } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { PublicHackathon, HackathonService } from '../../services/hackathonService';
 import { TeamService, TeamMember } from '../../services/teamService';
+import { PDFService } from '../../services/pdfService';
 
 const createTeamSchema = z.object({
   teamName: z.string().min(3, 'Team name must be at least 3 characters').max(50, 'Team name must not exceed 50 characters'),
@@ -61,6 +65,10 @@ export default function TeamManagement({ hackathonId: propHackathonId }: TeamMan
     submitted?: boolean;
   } | null>(null);
   const [copiedTeamCode, setCopiedTeamCode] = useState(false);
+  const [pdfUploaded, setPdfUploaded] = useState(false);
+  const [isUploadingPDF, setIsUploadingPDF] = useState(false);
+  const [isCheckingPDF, setIsCheckingPDF] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { currentUser, logout } = useAuth();
   const { showSuccess, showError } = useToast();
@@ -90,6 +98,13 @@ export default function TeamManagement({ hackathonId: propHackathonId }: TeamMan
 
     loadInitialData();
   }, [hackathonId, currentUser]);
+
+  // Check PDF upload status when team data changes
+  useEffect(() => {
+    if (teamData?.submitted && teamData.teamId) {
+      checkPDFUploadStatus();
+    }
+  }, [teamData]);
 
   const loadInitialData = async () => {
     try {
@@ -182,6 +197,22 @@ export default function TeamManagement({ hackathonId: propHackathonId }: TeamMan
       // For any other error, assume no team exists
       console.log('No team found - user can create or join a team');
       setTeamData(null);
+    }
+  };
+
+  const checkPDFUploadStatus = async () => {
+    if (!teamData?.teamId) return;
+
+    try {
+      setIsCheckingPDF(true);
+      const uploaded = await PDFService.checkPDFUploaded(teamData.teamId);
+      setPdfUploaded(uploaded);
+      console.log('PDF upload status for team', teamData.teamId, ':', uploaded);
+    } catch (error) {
+      console.error('Error checking PDF upload status:', error);
+      setPdfUploaded(false);
+    } finally {
+      setIsCheckingPDF(false);
     }
   };
 
@@ -308,13 +339,8 @@ export default function TeamManagement({ hackathonId: propHackathonId }: TeamMan
 
       showSuccess(
         'Team Submitted Successfully! 🏆',
-        'Your team has been submitted for the hackathon. No further changes can be made.'
+        'Your team has been submitted for the hackathon. You can now upload your project idea!'
       );
-
-      // Navigate back to hackathons page
-      setTimeout(() => {
-        navigate('/hackathons');
-      }, 2000);
 
     } catch (error: any) {
       // Check for authentication error
@@ -331,6 +357,57 @@ export default function TeamManagement({ hackathonId: propHackathonId }: TeamMan
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handlePDFUpload = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !teamData) return;
+
+    // Validate file type
+    if (file.type !== 'application/pdf') {
+      showError('Invalid File Type', 'Please select a PDF file only');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      showError('File Too Large', 'PDF file must be smaller than 10MB');
+      return;
+    }
+
+    try {
+      setIsUploadingPDF(true);
+
+      await PDFService.uploadPDF({
+        teamCode: teamData.teamId,
+        file: file,
+      });
+
+      setPdfUploaded(true);
+      showSuccess(
+        'PDF Uploaded Successfully! 📄',
+        `Your project idea has been uploaded as ${teamData.teamId}.pdf`
+      );
+
+    } catch (error: any) {
+      showError(
+        'Upload Failed',
+        error.message || 'Failed to upload PDF. Please try again.'
+      );
+    } finally {
+      setIsUploadingPDF(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -603,6 +680,89 @@ export default function TeamManagement({ hackathonId: propHackathonId }: TeamMan
                 )}
               </div>
 
+              {/* PDF Upload Section - Only show if team is submitted */}
+              {teamData.submitted && (
+                <div className="border-t-2 border-primary pt-6 mb-8">
+                  <h3 className="font-space font-bold text-xl text-primary mb-4 flex items-center">
+                    <FileText className="h-6 w-6 mr-2" />
+                    PROJECT IDEA SUBMISSION
+                  </h3>
+                  
+                  {isCheckingPDF ? (
+                    <div className="bg-accent/10 border-2 border-primary p-6 text-center">
+                      <Loader2 className="h-8 w-8 text-accent mx-auto mb-4 animate-spin" />
+                      <p className="font-inter text-primary/70">
+                        Checking PDF upload status...
+                      </p>
+                    </div>
+                  ) : pdfUploaded ? (
+                    <div className="bg-accent/20 border-2 border-accent p-6 text-center">
+                      <CheckCircle className="h-12 w-12 text-accent mx-auto mb-4" />
+                      <h4 className="font-space font-bold text-xl text-primary mb-2">
+                        PDF UPLOADED SUCCESSFULLY!
+                      </h4>
+                      <p className="font-inter text-primary/70 mb-4">
+                        Your project idea has been uploaded as <span className="font-semibold">{teamData.teamId}.pdf</span>
+                      </p>
+                      <div className="bg-background border-2 border-primary p-4">
+                        <p className="font-inter text-primary text-sm">
+                          ✅ Further submissions are not allowed. Your PDF has been successfully received.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-secondary/10 border-2 border-secondary p-6">
+                      <div className="text-center mb-6">
+                        <Upload className="h-12 w-12 text-secondary mx-auto mb-4" />
+                        <h4 className="font-space font-bold text-xl text-primary mb-2">
+                          UPLOAD YOUR PROJECT IDEA
+                        </h4>
+                        <p className="font-inter text-primary/70 mb-4">
+                          Submit your project idea as a PDF document (Max 10MB)
+                        </p>
+                        <div className="bg-background border-2 border-primary p-4 mb-6">
+                          <p className="font-inter text-primary text-sm">
+                            📄 <span className="font-semibold">PDF files only</span> - Include your project description, features, and implementation plan
+                          </p>
+                        </div>
+                      </div>
+
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handlePDFUpload}
+                        disabled={isUploadingPDF}
+                        className="w-full bg-secondary text-background py-4 px-6 border-2 border-primary shadow-brutal hover:shadow-brutal-hover transition-all duration-200 font-inter font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center relative overflow-hidden group"
+                      >
+                        <motion.div
+                          className="absolute inset-0 bg-accent opacity-0 group-hover:opacity-30 transition-opacity duration-300"
+                        />
+                        {isUploadingPDF ? (
+                          <div className="flex items-center relative z-10">
+                            <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                            UPLOADING PDF...
+                          </div>
+                        ) : (
+                          <div className="flex items-center relative z-10">
+                            <Upload className="mr-3 h-6 w-6" />
+                            UPLOAD YOUR IDEA (PDF ONLY)
+                          </div>
+                        )}
+                      </motion.button>
+
+                      {/* Hidden file input */}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Team Actions */}
               {teamData.isLeader && !teamData.submitted && (
                 <div className="border-t-2 border-primary pt-6">
@@ -642,15 +802,34 @@ export default function TeamManagement({ hackathonId: propHackathonId }: TeamMan
                 </div>
               )}
 
-              {teamData.submitted && (
+              {teamData.submitted && !pdfUploaded && (
                 <div className="border-t-2 border-primary pt-6">
                   <div className="bg-accent/20 border-2 border-accent p-6 text-center">
                     <CheckCircle className="h-12 w-12 text-accent mx-auto mb-4" />
                     <h3 className="font-space font-bold text-xl text-primary mb-2">
                       TEAM SUBMITTED SUCCESSFULLY!
                     </h3>
+                    <p className="font-inter text-primary/70 mb-4">
+                      Your team has been submitted for the hackathon. Now upload your project idea to complete the process.
+                    </p>
+                    <div className="bg-background border-2 border-primary p-4">
+                      <p className="font-inter text-primary text-sm">
+                        📋 <span className="font-semibold">Next Step:</span> Upload your project idea as a PDF document above
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {teamData.submitted && pdfUploaded && (
+                <div className="border-t-2 border-primary pt-6">
+                  <div className="bg-accent/20 border-2 border-accent p-6 text-center">
+                    <Trophy className="h-12 w-12 text-accent mx-auto mb-4" />
+                    <h3 className="font-space font-bold text-xl text-primary mb-2">
+                      SUBMISSION COMPLETE!
+                    </h3>
                     <p className="font-inter text-primary/70">
-                      Your team has been submitted for the hackathon. No further changes can be made.
+                      Your team and project idea have been successfully submitted. Good luck with the hackathon!
                     </p>
                   </div>
                 </div>

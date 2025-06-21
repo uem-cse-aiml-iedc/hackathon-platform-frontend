@@ -26,6 +26,7 @@ interface AIAssistantProps {
   onDataExtracted: (data: any) => void;
   onFieldError: (field: string, message: string) => void;
   onClearFieldError: (field: string) => void;
+  mode?: 'hackathon' | 'participant'; // New prop to determine which mode
 }
 
 interface ConversationMessage {
@@ -44,7 +45,12 @@ interface RecordingState {
   isProcessing: boolean;
 }
 
-export default function AIAssistant({ onDataExtracted, onFieldError, onClearFieldError }: AIAssistantProps) {
+export default function AIAssistant({ 
+  onDataExtracted, 
+  onFieldError, 
+  onClearFieldError, 
+  mode = 'hackathon' 
+}: AIAssistantProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [conversation, setConversation] = useState<ConversationMessage[]>([]);
@@ -87,27 +93,53 @@ export default function AIAssistant({ onDataExtracted, onFieldError, onClearFiel
       let extractedData;
       
       if (contentType === 'image' && file) {
-        extractedData = await GeminiService.processImageContent(file);
+        if (mode === 'participant') {
+          extractedData = await GeminiService.processParticipantImageContent(file);
+        } else {
+          extractedData = await GeminiService.processImageContent(file);
+        }
         addMessage('user', `Uploaded image: ${file.name}`, 'image');
       } else if (contentType === 'text' || contentType === 'live-audio') {
         const context = conversation.map(msg => `${msg.type}: ${msg.content}`).join('\n');
-        extractedData = await GeminiService.extractHackathonData(content, 'text', context);
+        if (mode === 'participant') {
+          extractedData = await GeminiService.extractParticipantData(content, 'text', context);
+        } else {
+          extractedData = await GeminiService.extractHackathonData(content, 'text', context);
+        }
         addMessage('user', content, contentType);
       } else {
-        // For audio, video, PDF - show not implemented message
+        // For audio, video, PDF
         if (contentType === 'audio') {
-          extractedData = await GeminiService.processAudioContent(file!);
+          if (mode === 'participant') {
+            extractedData = await GeminiService.processParticipantAudioContent(file!);
+          } else {
+            extractedData = await GeminiService.processAudioContent(file!);
+          }
         } else if (contentType === 'video') {
-          extractedData = await GeminiService.processVideoContent(file!);
+          if (mode === 'participant') {
+            extractedData = await GeminiService.processParticipantVideoContent(file!);
+          } else {
+            extractedData = await GeminiService.processVideoContent(file!);
+          }
         } else if (contentType === 'pdf') {
-          extractedData = await GeminiService.processPDFContent(file!);
+          if (mode === 'participant') {
+            extractedData = await GeminiService.processParticipantPDFContent(file!);
+          } else {
+            extractedData = await GeminiService.processPDFContent(file!);
+          }
         }
       }
 
-      // Clear previous field errors
-      ['hackathonName', 'tagline', 'about', 'startDate', 'endDate', 'registrationStartDate', 'registrationEndDate', 'venue'].forEach(field => {
-        onClearFieldError(field);
-      });
+      // Clear previous field errors based on mode
+      if (mode === 'participant') {
+        ['bio', 'phoneNo', 'githubLink', 'linkedinLink', 'foodPreference', 'skills'].forEach(field => {
+          onClearFieldError(field);
+        });
+      } else {
+        ['hackathonName', 'tagline', 'about', 'startDate', 'endDate', 'registrationStartDate', 'registrationEndDate', 'venue'].forEach(field => {
+          onClearFieldError(field);
+        });
+      }
 
       // Apply extracted data to form
       onDataExtracted(extractedData);
@@ -220,7 +252,8 @@ export default function AIAssistant({ onDataExtracted, onFieldError, onClearFiel
         }));
       }, 1000);
 
-      addMessage('assistant', '🎤 Started listening... Speak about your hackathon!');
+      const modeText = mode === 'participant' ? 'your background and skills' : 'your hackathon';
+      addMessage('assistant', `🎤 Started listening... Speak about ${modeText}!`);
     } catch (error: any) {
       console.error('Error starting recording:', error);
       addMessage('assistant', `❌ Failed to start recording: ${error.message}`);
@@ -339,6 +372,30 @@ export default function AIAssistant({ onDataExtracted, onFieldError, onClearFiel
     }
   };
 
+  const getWelcomeMessage = () => {
+    if (mode === 'participant') {
+      return {
+        title: 'READY TO HELP!',
+        description: 'Upload your resume, portfolio, or describe yourself, and I\'ll auto-fill your registration form!'
+      };
+    } else {
+      return {
+        title: 'READY TO HELP!',
+        description: 'Upload any content, record live audio, or type details about your hackathon, and I\'ll auto-fill the form for you!'
+      };
+    }
+  };
+
+  const getHeaderText = () => {
+    return mode === 'participant' ? 'AI REGISTRATION ASSISTANT' : 'AI ASSISTANT';
+  };
+
+  const getSubHeaderText = () => {
+    return mode === 'participant' ? 'Upload resume/portfolio to auto-fill' : 'Upload any content to auto-fill';
+  };
+
+  const welcomeMessage = getWelcomeMessage();
+
   return (
     <>
       {/* AI Assistant Toggle Button - Prominent USP */}
@@ -366,7 +423,7 @@ export default function AIAssistant({ onDataExtracted, onFieldError, onClearFiel
               {isOpen ? <X className="h-6 w-6" /> : <Bot className="h-6 w-6" />}
             </motion.div>
             <div className="hidden tablet:block">
-              <div className="font-space font-bold text-sm">AI ASSISTANT</div>
+              <div className="font-space font-bold text-sm">{getHeaderText()}</div>
               <div className="font-inter text-xs opacity-90">1-Click Fill</div>
             </div>
             <motion.div
@@ -409,8 +466,8 @@ export default function AIAssistant({ onDataExtracted, onFieldError, onClearFiel
                     <Bot className="h-6 w-6" />
                   </motion.div>
                   <div>
-                    <h3 className="font-space font-bold text-lg">AI ASSISTANT</h3>
-                    <p className="font-inter text-xs opacity-90">Upload any content to auto-fill</p>
+                    <h3 className="font-space font-bold text-lg">{getHeaderText()}</h3>
+                    <p className="font-inter text-xs opacity-90">{getSubHeaderText()}</p>
                   </div>
                 </div>
                 <motion.button
@@ -574,10 +631,10 @@ export default function AIAssistant({ onDataExtracted, onFieldError, onClearFiel
                     <Zap className="h-12 w-12 text-secondary mx-auto mb-4" />
                   </motion.div>
                   <h4 className="font-space font-bold text-primary mb-2">
-                    READY TO HELP!
+                    {welcomeMessage.title}
                   </h4>
                   <p className="font-inter text-primary/70 text-sm">
-                    Upload any content, record live audio, or type details about your hackathon, and I'll auto-fill the form for you!
+                    {welcomeMessage.description}
                   </p>
                 </div>
               )}
@@ -628,7 +685,7 @@ export default function AIAssistant({ onDataExtracted, onFieldError, onClearFiel
                   type="text"
                   value={textInput}
                   onChange={(e) => setTextInput(e.target.value)}
-                  placeholder="Describe your hackathon..."
+                  placeholder={mode === 'participant' ? 'Describe yourself...' : 'Describe your hackathon...'}
                   disabled={isProcessing || recording.isRecording}
                   className="flex-1 px-3 py-2 border-2 border-primary focus:border-secondary focus:outline-none font-inter bg-background text-sm disabled:opacity-50"
                 />
@@ -660,7 +717,7 @@ export default function AIAssistant({ onDataExtracted, onFieldError, onClearFiel
                   DROP YOUR FILE HERE
                 </h3>
                 <p className="font-inter text-primary/80">
-                  Images, Audio, Video, or PDF files
+                  {mode === 'participant' ? 'Resume, Portfolio, Images, Audio, Video, or PDF files' : 'Images, Audio, Video, or PDF files'}
                 </p>
               </div>
             </div>

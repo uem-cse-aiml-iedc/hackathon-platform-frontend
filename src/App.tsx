@@ -18,6 +18,7 @@ import Profile from './pages/Profile';
 import OrganizerDashboard from './pages/OrganizerDashboard';
 import HackathonRegistration from './pages/HackathonRegistration';
 import TeamManagement from './pages/TeamManagement';
+import Volunteer from './pages/Volunteer';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -42,6 +43,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/hackathons" element={<Hackathons />} />
+                  <Route path="/volunteer" element={<Volunteer />} />
                   <Route
                     path="/dashboard"
                     element={

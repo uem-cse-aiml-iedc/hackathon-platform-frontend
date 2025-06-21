@@ -32,6 +32,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { PublicHackathon, HackathonService } from '../../services/hackathonService';
 import { RegistrationService } from '../../services/registrationService';
+import AIAssistant from '../ai/AIAssistant';
 
 const registrationSchema = z.object({
   foodPreference: z.string().min(1, 'Food preference is required'),
@@ -57,6 +58,7 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [skillInput, setSkillInput] = useState('');
   const [skills, setSkills] = useState<string[]>([]);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const { currentUser } = useAuth();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
@@ -67,6 +69,8 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
     formState: { errors },
     setValue,
     watch,
+    clearErrors,
+    trigger,
   } = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
@@ -98,7 +102,11 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
   // Update form when skills change
   useEffect(() => {
     setValue('skills', skills);
-  }, [skills, setValue]);
+    if (skills.length > 0) {
+      clearErrors('skills');
+      handleClearFieldError('skills');
+    }
+  }, [skills, setValue, clearErrors]);
 
   const loadHackathonData = async () => {
     try {
@@ -148,6 +156,106 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
     }
   };
 
+  const handleAIDataExtracted = (extractedData: any) => {
+    console.log('AI extracted data:', extractedData);
+    
+    // Fill form fields with extracted data
+    if (extractedData.bio) {
+      console.log('Setting bio:', extractedData.bio);
+      setValue('bio', extractedData.bio);
+      clearErrors('bio');
+      handleClearFieldError('bio');
+      // Trigger validation to update form state
+      setTimeout(() => trigger('bio'), 100);
+    }
+    
+    if (extractedData.phoneNo || extractedData.phone) {
+      const phoneValue = extractedData.phoneNo || extractedData.phone;
+      console.log('Setting phone:', phoneValue);
+      setValue('phoneNo', phoneValue);
+      clearErrors('phoneNo');
+      handleClearFieldError('phoneNo');
+      setTimeout(() => trigger('phoneNo'), 100);
+    }
+    
+    if (extractedData.githubLink || extractedData.github) {
+      const githubValue = extractedData.githubLink || extractedData.github;
+      console.log('Setting GitHub:', githubValue);
+      // Ensure it's a valid URL
+      const githubUrl = githubValue.startsWith('http') ? githubValue : `https://github.com/${githubValue.replace('@', '')}`;
+      setValue('githubLink', githubUrl);
+      clearErrors('githubLink');
+      handleClearFieldError('githubLink');
+      setTimeout(() => trigger('githubLink'), 100);
+    }
+    
+    if (extractedData.linkedinLink || extractedData.linkedin) {
+      const linkedinValue = extractedData.linkedinLink || extractedData.linkedin;
+      console.log('Setting LinkedIn:', linkedinValue);
+      // Ensure it's a valid URL
+      const linkedinUrl = linkedinValue.startsWith('http') ? linkedinValue : `https://linkedin.com/in/${linkedinValue.replace('@', '')}`;
+      setValue('linkedinLink', linkedinUrl);
+      clearErrors('linkedinLink');
+      handleClearFieldError('linkedinLink');
+      setTimeout(() => trigger('linkedinLink'), 100);
+    }
+    
+    if (extractedData.foodPreference || extractedData.food) {
+      const foodValue = extractedData.foodPreference || extractedData.food;
+      console.log('Setting food preference:', foodValue);
+      // Map common variations to our options
+      const foodMapping: Record<string, string> = {
+        'vegetarian': 'veg',
+        'veg': 'veg',
+        'non-vegetarian': 'nonveg',
+        'nonveg': 'nonveg',
+        'non-veg': 'nonveg',
+        'vegan': 'vegan',
+        'jain': 'jain',
+        'other': 'other'
+      };
+      const mappedFood = foodMapping[foodValue.toLowerCase()] || 'other';
+      setValue('foodPreference', mappedFood);
+      clearErrors('foodPreference');
+      handleClearFieldError('foodPreference');
+      setTimeout(() => trigger('foodPreference'), 100);
+    }
+    
+    if (extractedData.skills && Array.isArray(extractedData.skills) && extractedData.skills.length > 0) {
+      console.log('Setting skills:', extractedData.skills);
+      setSkills(extractedData.skills);
+      // Skills will be updated via useEffect
+    }
+
+    // Show success message
+    const filledFields = [];
+    if (extractedData.bio) filledFields.push('Bio');
+    if (extractedData.phoneNo || extractedData.phone) filledFields.push('Phone');
+    if (extractedData.githubLink || extractedData.github) filledFields.push('GitHub');
+    if (extractedData.linkedinLink || extractedData.linkedin) filledFields.push('LinkedIn');
+    if (extractedData.foodPreference || extractedData.food) filledFields.push('Food Preference');
+    if (extractedData.skills && Array.isArray(extractedData.skills) && extractedData.skills.length > 0) filledFields.push('Skills');
+
+    if (filledFields.length > 0) {
+      showSuccess(
+        'AI Auto-Fill Complete! 🎉',
+        `Successfully filled: ${filledFields.join(', ')}`
+      );
+    }
+  };
+
+  const handleFieldError = (field: string, message: string) => {
+    setFieldErrors(prev => ({ ...prev, [field]: message }));
+  };
+
+  const handleClearFieldError = (field: string) => {
+    setFieldErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors[field];
+      return newErrors;
+    });
+  };
+
   const addSkill = () => {
     const trimmedSkill = skillInput.trim();
     if (trimmedSkill && !skills.includes(trimmedSkill)) {
@@ -165,6 +273,14 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
       e.preventDefault();
       addSkill();
     }
+  };
+
+  const getFieldError = (fieldName: string) => {
+    return fieldErrors[fieldName] || errors[fieldName as keyof typeof errors]?.message;
+  };
+
+  const hasFieldError = (fieldName: string) => {
+    return !!(fieldErrors[fieldName] || errors[fieldName as keyof typeof errors]);
   };
 
   const onSubmit = async (data: RegistrationFormData) => {
@@ -319,6 +435,31 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
                 <p className="font-inter text-background/90">
                   {hackathon.tagline}
                 </p>
+              </div>
+            </motion.div>
+
+            {/* AI USP Banner */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 }}
+              className="bg-gradient-to-r from-secondary/20 to-accent/20 border-4 border-primary shadow-brutal p-4 max-w-2xl mx-auto mb-8"
+            >
+              <div className="flex items-center justify-center space-x-3">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                >
+                  <Trophy className="h-6 w-6 text-secondary" />
+                </motion.div>
+                <div>
+                  <h3 className="font-space font-bold text-lg text-primary">
+                    🚀 AI-POWERED 1-CLICK FILL
+                  </h3>
+                  <p className="font-inter text-primary/80 text-sm">
+                    Upload your resume, portfolio, or describe yourself - AI will auto-fill your registration!
+                  </p>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -492,24 +633,24 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
                         type="tel"
                         id="phoneNo"
                         className={`w-full pl-10 pr-4 py-3 border-2 focus:outline-none font-inter bg-background ${
-                          errors.phoneNo 
+                          hasFieldError('phoneNo') 
                             ? 'border-secondary focus:border-secondary' 
                             : 'border-primary focus:border-secondary'
                         }`}
                         placeholder="+91 9876543210"
                       />
-                      {errors.phoneNo && (
+                      {hasFieldError('phoneNo') && (
                         <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary" />
                       )}
                     </div>
-                    {errors.phoneNo && (
+                    {hasFieldError('phoneNo') && (
                       <motion.p 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="mt-1 text-sm text-secondary font-inter flex items-center space-x-1"
                       >
                         <AlertCircle className="h-4 w-4" />
-                        <span>{errors.phoneNo.message}</span>
+                        <span>{getFieldError('phoneNo')}</span>
                       </motion.p>
                     )}
                   </div>
@@ -525,7 +666,7 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
                         {...register('foodPreference')}
                         id="foodPreference"
                         className={`w-full pl-10 pr-4 py-3 border-2 focus:outline-none font-inter bg-background appearance-none ${
-                          errors.foodPreference 
+                          hasFieldError('foodPreference') 
                             ? 'border-secondary focus:border-secondary' 
                             : 'border-primary focus:border-secondary'
                         }`}
@@ -537,18 +678,18 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
                         <option value="jain">Jain</option>
                         <option value="other">Other</option>
                       </select>
-                      {errors.foodPreference && (
+                      {hasFieldError('foodPreference') && (
                         <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary" />
                       )}
                     </div>
-                    {errors.foodPreference && (
+                    {hasFieldError('foodPreference') && (
                       <motion.p 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="mt-1 text-sm text-secondary font-inter flex items-center space-x-1"
                       >
                         <AlertCircle className="h-4 w-4" />
-                        <span>{errors.foodPreference.message}</span>
+                        <span>{getFieldError('foodPreference')}</span>
                       </motion.p>
                     )}
                   </div>
@@ -567,24 +708,24 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
                         type="url"
                         id="githubLink"
                         className={`w-full pl-10 pr-4 py-3 border-2 focus:outline-none font-inter bg-background ${
-                          errors.githubLink 
+                          hasFieldError('githubLink') 
                             ? 'border-secondary focus:border-secondary' 
                             : 'border-primary focus:border-secondary'
                         }`}
                         placeholder="https://github.com/yourusername"
                       />
-                      {errors.githubLink && (
+                      {hasFieldError('githubLink') && (
                         <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary" />
                       )}
                     </div>
-                    {errors.githubLink && (
+                    {hasFieldError('githubLink') && (
                       <motion.p 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="mt-1 text-sm text-secondary font-inter flex items-center space-x-1"
                       >
                         <AlertCircle className="h-4 w-4" />
-                        <span>{errors.githubLink.message}</span>
+                        <span>{getFieldError('githubLink')}</span>
                       </motion.p>
                     )}
                   </div>
@@ -601,24 +742,24 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
                         type="url"
                         id="linkedinLink"
                         className={`w-full pl-10 pr-4 py-3 border-2 focus:outline-none font-inter bg-background ${
-                          errors.linkedinLink 
+                          hasFieldError('linkedinLink') 
                             ? 'border-secondary focus:border-secondary' 
                             : 'border-primary focus:border-secondary'
                         }`}
                         placeholder="https://linkedin.com/in/yourusername"
                       />
-                      {errors.linkedinLink && (
+                      {hasFieldError('linkedinLink') && (
                         <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary" />
                       )}
                     </div>
-                    {errors.linkedinLink && (
+                    {hasFieldError('linkedinLink') && (
                       <motion.p 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="mt-1 text-sm text-secondary font-inter flex items-center space-x-1"
                       >
                         <AlertCircle className="h-4 w-4" />
-                        <span>{errors.linkedinLink.message}</span>
+                        <span>{getFieldError('linkedinLink')}</span>
                       </motion.p>
                     )}
                   </div>
@@ -677,14 +818,14 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
                       </div>
                     )}
                     
-                    {errors.skills && (
+                    {hasFieldError('skills') && (
                       <motion.p 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="text-sm text-secondary font-inter flex items-center space-x-1"
                       >
                         <AlertCircle className="h-4 w-4" />
-                        <span>{errors.skills.message}</span>
+                        <span>{getFieldError('skills')}</span>
                       </motion.p>
                     )}
                   </div>
@@ -702,25 +843,25 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
                       id="bio"
                       rows={4}
                       className={`w-full pl-10 pr-4 py-3 border-2 focus:outline-none font-inter bg-background resize-none ${
-                        errors.bio 
+                        hasFieldError('bio') 
                           ? 'border-secondary focus:border-secondary' 
                           : 'border-primary focus:border-secondary'
                       }`}
                       placeholder="Tell us about yourself, your experience, what you hope to achieve in this hackathon..."
                     />
-                    {errors.bio && (
+                    {hasFieldError('bio') && (
                       <AlertCircle className="absolute right-3 top-3 h-5 w-5 text-secondary" />
                     )}
                   </div>
                   <div className="flex justify-between items-center mt-1">
-                    {errors.bio && (
+                    {hasFieldError('bio') && (
                       <motion.p 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="text-sm text-secondary font-inter flex items-center space-x-1"
                       >
                         <AlertCircle className="h-4 w-4" />
-                        <span>{errors.bio.message}</span>
+                        <span>{getFieldError('bio')}</span>
                       </motion.p>
                     )}
                     <span className="text-xs text-primary/50 font-inter ml-auto">
@@ -759,6 +900,14 @@ export default function HackathonRegistration({ hackathonId: propHackathonId }: 
           </motion.div>
         </motion.div>
       </div>
+
+      {/* AI Assistant Component */}
+      <AIAssistant
+        mode="participant"
+        onDataExtracted={handleAIDataExtracted}
+        onFieldError={handleFieldError}
+        onClearFieldError={handleClearFieldError}
+      />
     </div>
   );
 }
