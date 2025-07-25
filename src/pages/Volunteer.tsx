@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { 
-  Shield, 
-  QrCode, 
-  Mail, 
-  ArrowLeft, 
-  Scan, 
-  CheckCircle, 
+import {
+  Shield,
+  QrCode,
+  Mail,
+  ArrowLeft,
+  Scan,
+  CheckCircle,
   AlertCircle,
   Loader2,
   UserCheck,
@@ -28,8 +28,9 @@ const dutyCodeSchema = z.object({
   dutyCode: z.string().min(1, 'Duty code is required'),
 });
 
+// MODIFIED: Changed .email() to .min(1) to bypass strict email format validation
 const emailSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  email: z.string().min(1, 'Email is required'),
 });
 
 type DutyCodeFormData = z.infer<typeof dutyCodeSchema>;
@@ -165,7 +166,7 @@ export default function Volunteer() {
                 animate={{ x: [-100, 400] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               />
-              
+
               <div className="relative z-10">
                 <div className="flex items-center justify-center space-x-3 mb-4">
                   <motion.div
@@ -214,8 +215,8 @@ export default function Volunteer() {
                       type="text"
                       id="dutyCode"
                       className={`w-full pl-10 pr-4 py-3 border-2 focus:outline-none font-inter bg-background text-center font-mono text-lg ${
-                        dutyCodeForm.formState.errors.dutyCode 
-                          ? 'border-secondary focus:border-secondary' 
+                        dutyCodeForm.formState.errors.dutyCode
+                          ? 'border-secondary focus:border-secondary'
                           : 'border-primary focus:border-secondary'
                       }`}
                       placeholder="Enter your duty code"
@@ -226,7 +227,7 @@ export default function Volunteer() {
                     )}
                   </div>
                   {dutyCodeForm.formState.errors.dutyCode && (
-                    <motion.p 
+                    <motion.p
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="mt-1 text-sm text-secondary font-inter flex items-center space-x-1"
@@ -376,11 +377,11 @@ export default function Volunteer() {
                             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary/50" />
                             <input
                               {...emailForm.register('email')}
-                              type="email"
+                              type="text"
                               id="email"
                               className={`w-full pl-10 pr-4 py-3 border-2 focus:outline-none font-inter bg-background ${
-                                emailForm.formState.errors.email 
-                                  ? 'border-secondary focus:border-secondary' 
+                                emailForm.formState.errors.email
+                                  ? 'border-secondary focus:border-secondary'
                                   : 'border-primary focus:border-secondary'
                               }`}
                               placeholder="participant@example.com"
@@ -391,7 +392,7 @@ export default function Volunteer() {
                             )}
                           </div>
                           {emailForm.formState.errors.email && (
-                            <motion.p 
+                            <motion.p
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               className="mt-1 text-sm text-secondary font-inter flex items-center space-x-1"
